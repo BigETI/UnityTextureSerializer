@@ -22,7 +22,7 @@ namespace UnityTextureSerializer.Data
         /// Texture format
         /// </summary>
         [SerializeField]
-        private TextureFormat textureFormat;
+        private TextureFormat textureFormat = TextureFormat.ARGB32;
 
         /// <summary>
         /// Mip count
@@ -112,14 +112,21 @@ namespace UnityTextureSerializer.Data
             {
                 if (value != null)
                 {
+                    sprite = null;
+                    linear = (value.filterMode != FilterMode.Point);
                     if (value.isReadable)
                     {
-                        sprite = null;
                         texture = value;
-                        size = new Vector2Int(texture.width, texture.height);
-                        textureFormat = texture.format;
-                        pngData = Convert.ToBase64String(texture.EncodeToPNG());
                     }
+                    else
+                    {
+                        texture = new Texture2D(value.width, value.height, value.format, value.mipmapCount, linear);
+                        Graphics.CopyTexture(value, texture);
+                    }
+                    size = new Vector2Int(texture.width, texture.height);
+                    textureFormat = texture.format;
+                    mipCount = texture.mipmapCount;
+                    pngData = Convert.ToBase64String(texture.EncodeToPNG());
                 }
             }
         }
@@ -144,6 +151,65 @@ namespace UnityTextureSerializer.Data
                     Texture = value.texture;
                 }
             }
+        }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public SerializedTextureData()
+        {
+            // ...
+        }
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="serializedTexture">Serialized texture</param>
+        public SerializedTextureData(SerializedTextureData serializedTexture)
+        {
+            if (serializedTexture != null)
+            {
+                size = serializedTexture.Size;
+                textureFormat = serializedTexture.textureFormat;
+                mipCount = serializedTexture.mipCount;
+                linear = serializedTexture.linear;
+                pngData = serializedTexture.PNGData;
+            }
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="size">Size</param>
+        /// <param name="textureFormat">Texture format</param>
+        /// <param name="mipCount">Mip count</param>
+        /// <param name="linear">Is linear</param>
+        /// <param name="pngData">PNG data</param>
+        public SerializedTextureData(Vector2Int size, TextureFormat textureFormat, int mipCount, bool linear, string pngData)
+        {
+            this.size = size;
+            this.textureFormat = textureFormat;
+            this.mipCount = mipCount;
+            this.linear = linear;
+            this.pngData = pngData;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="texture">Texture</param>
+        public SerializedTextureData(Texture2D texture)
+        {
+            Texture = texture;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="sprite">Sprite</param>
+        public SerializedTextureData(Sprite sprite)
+        {
+            Sprite = sprite;
         }
     }
 }
