@@ -1,0 +1,17 @@
+{
+    "name": "com.bigeti.texture-serializer",
+    "version": "1.0.0",
+    "displayName": "Unity Texture Serializer",
+    "description": "This package is a texture serializer for Unity.\nThe goal is to serialize textures, that can be used within save files or for networking.",
+    "dependencies": {},
+    "keywords": [
+        "texture",
+        "serializer",
+        "textureserializer"
+    ],
+    "author": {
+        "name": "Ethem Kurt",
+        "email": "bigeti.ethem@gmail.com",
+        "url": "https://bigeti.de/"
+    }
+}
